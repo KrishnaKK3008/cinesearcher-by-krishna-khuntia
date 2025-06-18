@@ -21,6 +21,24 @@ const search = async query => {
   }
 };
 
-const movies = { search };
+const getById = async id => {
+  try {
+    const response = await axios.get(API_ENDPOINT, {
+      params: {
+        i: id,
+        apikey: process.env.REACT_APP_OMDB_API_KEY,
+      },
+    });
+    console.log(response);
+
+    return response;
+  } catch (error) {
+    console.error("OMDB Fetch Error (getById):", error);
+
+    return null;
+  }
+};
+
+const movies = { search, getById };
 
 export default movies;
