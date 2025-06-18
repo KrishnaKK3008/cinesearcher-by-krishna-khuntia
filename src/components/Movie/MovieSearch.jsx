@@ -1,4 +1,3 @@
-// src/components/MovieSearch.js
 import React, { useState, useEffect } from "react";
 
 import { Search } from "neetoicons";
@@ -7,29 +6,28 @@ import { Input } from "neetoui";
 import MovieCard from "./MovieCard";
 import MovieModal from "./MovieModal";
 
-import movies from "../api/movies";
-import useDebounce from "../hooks/useDebounce";
+import movies from "../../api/movies";
+import useDebounce from "../../hooks/useDebounce";
 
 const MovieSearch = () => {
+  // All state and logic for search/modal remain here
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
-  // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [movieDetails, setMovieDetails] = useState(null);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
 
-  // Search effect
+  // All useEffect hooks and handler functions remain unchanged...
   useEffect(() => {
     const handleSearch = async () => {
       if (debouncedSearchQuery) {
         setIsSearching(true);
         try {
           const results = await movies.search(debouncedSearchQuery);
-          // Make sure the API call was successful before setting results
           if (results.Response === "True") {
             setSearchResults(results.Search);
           } else {
@@ -45,11 +43,9 @@ const MovieSearch = () => {
         setSearchResults([]);
       }
     };
-
     handleSearch();
   }, [debouncedSearchQuery]);
 
-  // Movie details effect
   useEffect(() => {
     const fetchMovieDetails = async () => {
       if (selectedMovieId) {
@@ -69,13 +65,10 @@ const MovieSearch = () => {
         }
       }
     };
-
     fetchMovieDetails();
   }, [selectedMovieId]);
 
-  const handleInputChange = e => {
-    setSearchQuery(e.target.value);
-  };
+  const handleInputChange = e => setSearchQuery(e.target.value);
 
   const handleViewDetails = imdbID => {
     setSelectedMovieId(imdbID);
@@ -97,8 +90,7 @@ const MovieSearch = () => {
 
     if (searchResults.length > 0) {
       return (
-        // Updated grid layout for better responsiveness and spacing
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
           {searchResults.map(movie => (
             <MovieCard
               key={movie.imdbID}
@@ -123,23 +115,21 @@ const MovieSearch = () => {
   };
 
   return (
+    // The component now returns its content directly.
+    // The <main> wrapper is now in App.js.
     <>
-      {/* Updated main container with a white background and more padding */}
-      <div className="min-h-screen w-full bg-white px-4 py-8">
-        <div className="mx-auto max-w-6xl">
-          {/* Refined search input */}
-          <div className="mb-8 w-full">
-            <Input
-              className="!rounded-md !border-gray-200"
-              placeholder="Search for movies, series..."
-              prefix={<Search className="text-gray-400" />}
-              size="large"
-              value={searchQuery}
-              onChange={handleInputChange}
-            />
-          </div>
-          {renderContent()}
+      <div className="mx-auto w-full max-w-7xl">
+        <div className="mb-8 w-full">
+          <Input
+            className="!rounded-md !border-gray-200"
+            placeholder="Search for movies, series..."
+            prefix={<Search className="text-gray-400" />}
+            size="large"
+            value={searchQuery}
+            onChange={handleInputChange}
+          />
         </div>
+        {renderContent()}
       </div>
       <MovieModal
         details={movieDetails}
