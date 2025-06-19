@@ -1,11 +1,14 @@
+// src/components/Movie/MovieModal.jsx
+
 import React, { useEffect } from "react";
 
 import { Close } from "neetoicons";
 import { Spinner } from "neetoui";
 
+import { FALLBACK_IMAGE } from "../../constants";
 import useViewHistoryStore from "../../stores/useViewHistoryStore";
 
-const FALLBACK_IMAGE = "https://via.placeholder.com/300x450.png?text=No+Poster";
+// 1. Import the constant from your central file.
 
 const DetailItem = ({ label, value }) =>
   value &&
@@ -28,11 +31,7 @@ const MovieModal = ({ isOpen, onClose, details, isLoading }) => {
 
   if (!isOpen) return null;
 
-  const posterSrc =
-    details?.Poster && details.Poster !== "N/A"
-      ? details.Poster
-      : FALLBACK_IMAGE;
-
+  // 2. The posterSrc variable is no longer needed.
   const genreTags = details?.Genre?.split(", ") || [];
 
   return (
@@ -80,11 +79,12 @@ const MovieModal = ({ isOpen, onClose, details, isLoading }) => {
                   <img
                     alt={details.Title}
                     className="h-auto w-full rounded-md object-cover"
-                    src={posterSrc}
+                    // 3. Set the src directly from the details object.
+                    src={details.Poster}
+                    // 4. The onError handler uses the imported constant.
                     onError={e => {
                       e.target.onerror = null;
-                      e.target.src =
-                        "https://upload.wikimedia.org/wikipedia/commons/c/c2/No_image_poster.png";
+                      e.target.src = FALLBACK_IMAGE;
                     }}
                   />
                 </div>

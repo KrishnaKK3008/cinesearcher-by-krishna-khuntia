@@ -10,9 +10,8 @@ import MovieCard from "./MovieCard";
 import MovieModal from "./MovieModal";
 
 import movies from "../../api/movies";
+import { DEFAULT_PAGE_SIZE } from "../../constants";
 import useDebounce from "../../hooks/useDebounce";
-
-const DEFAULT_PAGE_SIZE = 10;
 
 const MovieSearch = () => {
   const location = useLocation();

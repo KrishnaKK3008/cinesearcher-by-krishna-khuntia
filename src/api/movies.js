@@ -1,4 +1,3 @@
-// movies.js
 import axios from "axios";
 
 const API_ENDPOINT = "https://www.omdbapi.com/";
