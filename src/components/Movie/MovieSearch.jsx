@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-// 1. Import hooks from react-router-dom v5 and react-query v3
-
 import { Search } from "neetoicons";
-import { Input } from "neetoui";
+import { Input, Pagination } from "neetoui";
 import { useQuery } from "react-query";
 import { useLocation, useHistory } from "react-router-dom";
 
@@ -13,54 +11,60 @@ import MovieModal from "./MovieModal";
 import movies from "../../api/movies";
 import useDebounce from "../../hooks/useDebounce";
 
+const DEFAULT_PAGE_SIZE = 10;
+
 const MovieSearch = () => {
-  // --- STATE MANAGEMENT FOR v5 ---
-  // 2. Get location and history objects from react-router-dom v5
   const location = useLocation();
   const history = useHistory();
 
-  // 3. Manually parse the search query from the URL
   const queryParams = new URLSearchParams(location.search);
   const currentSearch = queryParams.get("query") || "";
+  const currentPage = Number(queryParams.get("page")) || 1;
 
-  // Local state for the input field, initialized with the URL value
   const [inputValue, setInputValue] = useState(currentSearch);
   const debouncedSearchQuery = useDebounce(inputValue, 500);
 
-  // 4. useQuery from 'react-query' v3. The API is very similar.
   const {
     data: searchResults,
     isLoading: isSearching,
     isError,
   } = useQuery(
-    ["movies", debouncedSearchQuery], // Query key
-    () => movies.search(debouncedSearchQuery), // Fetching function
-    { enabled: !!debouncedSearchQuery } // Options
+    // The key now includes the page, making each page's data unique.
+    ["movies", debouncedSearchQuery, currentPage],
+    // The fetcher now passes the page number to our updated search function.
+    () => movies.search(debouncedSearchQuery, currentPage),
+    {
+      enabled: !!debouncedSearchQuery,
+      keepPreviousData: true, // Recommended for a smoother pagination experience
+    }
   );
 
-  // Modal state remains the same
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMovieId, setSelectedMovieId] = useState(null);
-  // ... (rest of modal state is identical)
-  const [movieDetails, setMovieDetails] = useState(null);
-  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
-
-  // 5. This effect syncs the debounced input to the URL using history.replace
   useEffect(() => {
     if (debouncedSearchQuery) {
-      history.replace(`/?query=${debouncedSearchQuery}`);
+      history.replace(`/?query=${debouncedSearchQuery}&page=1`);
     } else {
       history.replace("/");
     }
   }, [debouncedSearchQuery, history]);
 
-  // All other logic remains the same
+  const handlePageChange = newPage => {
+    const newParams = new URLSearchParams(location.search);
+    newParams.set("page", newPage);
+    history.push({ search: newParams.toString() });
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMovieId, setSelectedMovieId] = useState(null);
+  const [movieDetails, setMovieDetails] = useState(null);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+
   useEffect(() => {
     const fetchMovieDetails = async () => {
       if (selectedMovieId) {
         setIsLoadingDetails(true);
         try {
           const details = await movies.getById(selectedMovieId);
+          // Now we can directly check details.Response because movies.js returns the data
           if (details.Response === "True") {
             setMovieDetails(details);
           } else setMovieDetails(null);
@@ -88,7 +92,7 @@ const MovieSearch = () => {
   };
 
   const renderContent = () => {
-    if (isSearching) {
+    if (isSearching && !searchResults) {
       return <p className="mt-10 text-center text-gray-500">Searching...</p>;
     }
 
@@ -98,20 +102,36 @@ const MovieSearch = () => {
       );
     }
 
+    // Now we can directly check searchResults.Response
     if (searchResults?.Response === "True") {
+      const { Search: movies, totalResults } = searchResults;
+
       return (
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-          {searchResults.Search.map(movie => (
-            <MovieCard
-              key={movie.imdbID}
-              poster={movie.Poster}
-              title={movie.Title}
-              type={movie.Type}
-              year={movie.Year}
-              onViewDetails={() => handleViewDetails(movie.imdbID)}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+            {movies.map(movie => (
+              <MovieCard
+                key={movie.imdbID}
+                poster={movie.Poster}
+                title={movie.Title}
+                type={movie.Type}
+                year={movie.Year}
+                onViewDetails={() => handleViewDetails(movie.imdbID)}
+              />
+            ))}
+          </div>
+          {totalResults > DEFAULT_PAGE_SIZE && (
+            <div className="mt-8 flex w-full justify-center">
+              <Pagination
+                count={Number(totalResults)}
+                isLoading={isSearching}
+                navigate={handlePageChange}
+                pageNo={currentPage}
+                pageSize={DEFAULT_PAGE_SIZE}
+              />
+            </div>
+          )}
+        </>
       );
     }
 

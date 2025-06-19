@@ -3,15 +3,16 @@ import axios from "axios";
 
 const API_ENDPOINT = "https://www.omdbapi.com/";
 
-const search = async query => {
+const search = async (query, page) => {
   try {
     const response = await axios.get(API_ENDPOINT, {
       params: {
         s: query,
         apikey: process.env.REACT_APP_OMDB_API_KEY,
+        page,
       },
     });
-    console.log(response);
+    console.log(`${response} for page number ${page}`);
 
     return response;
   } catch (error) {
