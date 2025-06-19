@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { Search } from "neetoicons";
-import { Input, Pagination } from "neetoui";
+import { Input, Pagination, Spinner } from "neetoui";
 import { useQuery } from "react-query";
 import { useLocation, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -103,7 +103,11 @@ const MovieSearch = () => {
 
   const renderContent = () => {
     if (isSearching && !searchResults) {
-      return <p className="mt-10 text-center text-gray-500">Searching...</p>;
+      return (
+        <div className="mt-10 flex h-full w-full items-center justify-center">
+          <Spinner size="large" />
+        </div>
+      );
     }
 
     if (isError && !searchResults) {
@@ -169,6 +173,7 @@ const MovieSearch = () => {
           placeholder="Search for movies, series..."
           prefix={<Search className="text-gray-400" />}
           size="large"
+          suffix={isSearching ? <Spinner /> : null}
           value={inputValue}
           onChange={e => setInputValue(e.target.value)}
         />
