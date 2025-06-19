@@ -4,6 +4,7 @@ import { Search } from "neetoicons";
 import { Input, Pagination } from "neetoui";
 import { useQuery } from "react-query";
 import { useLocation, useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import MovieCard from "./MovieCard";
 import MovieModal from "./MovieModal";
@@ -29,13 +30,19 @@ const MovieSearch = () => {
     isLoading: isSearching,
     isError,
   } = useQuery(
-    // The key now includes the page, making each page's data unique.
     ["movies", debouncedSearchQuery, currentPage],
-    // The fetcher now passes the page number to our updated search function.
     () => movies.search(debouncedSearchQuery, currentPage),
     {
       enabled: !!debouncedSearchQuery,
-      keepPreviousData: true, // Recommended for a smoother pagination experience
+      keepPreviousData: true,
+      onSuccess: data => {
+        if (data?.Response === "False") {
+          toast.error(data.Error);
+        }
+      },
+      onError: () => {
+        toast.error("A network error occurred. Please try again later.");
+      },
     }
   );
 
@@ -64,12 +71,15 @@ const MovieSearch = () => {
         setIsLoadingDetails(true);
         try {
           const details = await movies.getById(selectedMovieId);
-          // Now we can directly check details.Response because movies.js returns the data
-          if (details.Response === "True") {
+          if (details?.Response === "True") {
             setMovieDetails(details);
-          } else setMovieDetails(null);
+          } else {
+            setMovieDetails(null);
+            if (details?.Error) toast.error(details.Error);
+          }
         } catch (error) {
           console.error("Error fetching movie details:", error);
+          toast.error("Could not fetch movie details.");
         } finally {
           setIsLoadingDetails(false);
         }
@@ -96,13 +106,14 @@ const MovieSearch = () => {
       return <p className="mt-10 text-center text-gray-500">Searching...</p>;
     }
 
-    if (isError) {
+    if (isError && !searchResults) {
       return (
-        <p className="mt-10 text-center text-red-500">An error occurred.</p>
+        <p className="mt-10 text-center text-red-500">
+          Could not connect to the server.
+        </p>
       );
     }
 
-    // Now we can directly check searchResults.Response
     if (searchResults?.Response === "True") {
       const { Search: movies, totalResults } = searchResults;
 
@@ -138,7 +149,7 @@ const MovieSearch = () => {
     if (debouncedSearchQuery) {
       return (
         <p className="mt-10 text-center text-gray-500">
-          No results found for "{debouncedSearchQuery}"
+          No results to display for "{debouncedSearchQuery}"
         </p>
       );
     }

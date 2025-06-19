@@ -2,11 +2,12 @@ import React from "react";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter as Router } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import MovieSearch from "./components/Movie/MovieSearch"; // Adjust path as needed
-import History from "./components/Pages/History"; // Adjust path as needed
+import MovieSearch from "./components/Movie/MovieSearch";
+import History from "./components/Pages/History";
 
-// Create a client for react-query
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -18,6 +19,14 @@ const App = () => (
         </main>
         <History />
       </div>
+      <ToastContainer
+        closeOnClick
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        position="top-right"
+        theme="light"
+      />
     </Router>
   </QueryClientProvider>
 );
