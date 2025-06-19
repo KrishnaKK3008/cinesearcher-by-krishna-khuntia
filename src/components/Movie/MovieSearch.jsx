@@ -10,19 +10,17 @@ import movies from "../../api/movies";
 import useDebounce from "../../hooks/useDebounce";
 
 const MovieSearch = () => {
-  // All state and logic for search/modal remain here
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [movieDetails, setMovieDetails] = useState(null);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
 
-  // All useEffect hooks and handler functions remain unchanged...
   useEffect(() => {
+    // ... your existing search logic (unchanged)
     const handleSearch = async () => {
       if (debouncedSearchQuery) {
         setIsSearching(true);
@@ -47,6 +45,7 @@ const MovieSearch = () => {
   }, [debouncedSearchQuery]);
 
   useEffect(() => {
+    // ... your existing details logic (unchanged)
     const fetchMovieDetails = async () => {
       if (selectedMovieId) {
         setIsLoadingDetails(true);
@@ -69,7 +68,6 @@ const MovieSearch = () => {
   }, [selectedMovieId]);
 
   const handleInputChange = e => setSearchQuery(e.target.value);
-
   const handleViewDetails = imdbID => {
     setSelectedMovieId(imdbID);
     setIsModalOpen(true);
@@ -115,29 +113,31 @@ const MovieSearch = () => {
   };
 
   return (
-    // The component now returns its content directly.
-    // The <main> wrapper is now in App.js.
-    <>
-      <div className="mx-auto w-full max-w-7xl">
-        <div className="mb-8 w-full">
-          <Input
-            className="!rounded-md !border-gray-200"
-            placeholder="Search for movies, series..."
-            prefix={<Search className="text-gray-400" />}
-            size="large"
-            value={searchQuery}
-            onChange={handleInputChange}
-          />
-        </div>
-        {renderContent()}
+    // This container fills the height of its parent (<main>) and lays out its own children vertically.
+    <div className="flex h-full flex-col">
+      {/* Search bar section - this part does NOT scroll */}
+      <div className="border-b border-gray-200 p-6">
+        <Input
+          className="!rounded-md !border-gray-200"
+          placeholder="Search for movies, series..."
+          prefix={<Search className="text-gray-400" />}
+          size="large"
+          value={searchQuery}
+          onChange={handleInputChange}
+        />
       </div>
+      {/* Results grid section - this part IS scrollable */}
+      <div className="flex-grow overflow-y-auto p-6">
+        <div className="mx-auto w-full max-w-7xl">{renderContent()}</div>
+      </div>
+      {/* Modal remains outside the layout flow */}
       <MovieModal
         details={movieDetails}
         isLoading={isLoadingDetails}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
       />
-    </>
+    </div>
   );
 };
 
