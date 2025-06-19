@@ -11,6 +11,11 @@ const MovieCard = ({ title, year, poster, type, onViewDetails }) => (
         alt={title}
         className="h-full w-full object-contain"
         src={poster === "N/A" ? FALLBACK_IMAGE : poster}
+        onError={e => {
+          e.target.onerror = null;
+          e.target.src =
+            "https://upload.wikimedia.org/wikipedia/commons/c/c2/No_image_poster.png";
+        }}
       />
     </div>
     <div className="mt-3 flex flex-grow flex-col justify-between">
