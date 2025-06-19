@@ -1,21 +1,18 @@
-// eslint-disable-next-line import/extensions
-import MovieSearch from "components/Movie/MovieSearch";
-import HistorySidebar from "components/Pages/History";
-// eslint-disable-next-line import/extensions
+import React from "react";
 
-import "./App.css";
+import MovieSearch from "./components/Movie/MovieSearch"; // Adjust path as needed
+import History from "./components/Pages/History"; // Adjust path as needed
 
 const App = () => (
-  <div className="App">
-    {/* This is the main layout container for the entire page */}
-    <div className="flex min-h-screen w-full bg-white">
-      {/* Main content area that will grow to fill available space */}
-      <main className="flex-grow p-6 lg:p-8">
-        <MovieSearch />
-      </main>
-      {/* The history sidebar is now a direct child of the main layout */}
-      <HistorySidebar />
-    </div>
+  // This root container uses Flexbox and takes up the full screen height.
+  // This prevents the entire page from scrolling.
+  <div className="flex h-screen bg-gray-50">
+    {/* 1. The Main Content Area */}
+    <main className="flex-1 flex-col overflow-hidden">
+      <MovieSearch />
+    </main>
+    {/* 2. The History Sidebar */}
+    <History />
   </div>
 );
 
