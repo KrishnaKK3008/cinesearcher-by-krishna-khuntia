@@ -81,6 +81,11 @@ const MovieModal = ({ isOpen, onClose, details, isLoading }) => {
                     alt={details.Title}
                     className="h-auto w-full rounded-md object-cover"
                     src={posterSrc}
+                    onError={e => {
+                      e.target.onerror = null;
+                      e.target.src =
+                        "https://upload.wikimedia.org/wikipedia/commons/c/c2/No_image_poster.png";
+                    }}
                   />
                 </div>
                 <div className="flex flex-col">
