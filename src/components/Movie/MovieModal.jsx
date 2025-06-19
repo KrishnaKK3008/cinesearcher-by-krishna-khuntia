@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Close } from "neetoicons";
 import { Spinner } from "neetoui";
+
+import useViewHistoryStore from "../../stores/useViewHistoryStore";
 
 const FALLBACK_IMAGE = "https://via.placeholder.com/300x450.png?text=No+Poster";
 
@@ -15,6 +17,17 @@ const DetailItem = ({ label, value }) =>
   );
 
 const MovieModal = ({ isOpen, onClose, details, isLoading }) => {
+  // 2. Get the actions from the Zustand store
+  const { setMovies, setSelectedMovie } = useViewHistoryStore();
+
+  // 3. Use an effect to update the history when the modal opens with details
+  useEffect(() => {
+    if (isOpen && details) {
+      setMovies(details);
+      setSelectedMovie(details);
+    }
+  }, [isOpen, details, setMovies, setSelectedMovie]);
+
   if (!isOpen) return null;
 
   const posterSrc =
