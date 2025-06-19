@@ -17,10 +17,8 @@ const DetailItem = ({ label, value }) =>
   );
 
 const MovieModal = ({ isOpen, onClose, details, isLoading }) => {
-  // 2. Get the actions from the Zustand store
   const { setMovies, setSelectedMovie } = useViewHistoryStore();
 
-  // 3. Use an effect to update the history when the modal opens with details
   useEffect(() => {
     if (isOpen && details) {
       setMovies(details);
