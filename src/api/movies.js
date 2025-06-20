@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const API_ENDPOINT = "https://www.omdbapi.com/";
+import { OMDB_API } from "../constants";
 
 const search = async (query, page) => {
   try {
-    const response = await axios.get(API_ENDPOINT, {
+    const response = await axios.get(OMDB_API, {
       params: {
         s: query,
         apikey: process.env.REACT_APP_OMDB_API_KEY,
@@ -23,7 +23,7 @@ const search = async (query, page) => {
 
 const getById = async id => {
   try {
-    const response = await axios.get(API_ENDPOINT, {
+    const response = await axios.get(OMDB_API, {
       params: {
         i: id,
         apikey: process.env.REACT_APP_OMDB_API_KEY,

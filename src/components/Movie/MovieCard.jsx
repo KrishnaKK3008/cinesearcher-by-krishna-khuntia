@@ -1,11 +1,7 @@
-// src/components/Movie/MovieCard.jsx
-
 import React from "react";
 
 import { Button } from "neetoui";
 
-// 1. Import the constant from your central file.
-//    (Adjust the path if your component is in a different directory)
 import { FALLBACK_IMAGE } from "../../constants";
 
 const MovieCard = ({ title, year, poster, type, onViewDetails }) => (
@@ -14,9 +10,7 @@ const MovieCard = ({ title, year, poster, type, onViewDetails }) => (
       <img
         alt={title}
         className="h-full w-full object-contain"
-        // 2. Set the src directly to the poster URL from the API.
         src={poster}
-        // 3. The onError handler now uses the imported constant.
         onError={e => {
           e.target.onerror = null;
           e.target.src = FALLBACK_IMAGE;
