@@ -20,7 +20,6 @@ const MovieSearch = () => {
   const location = useLocation();
   const history = useHistory();
 
-  // Use the utility function to get parameters from the URL.
   const { query: currentSearch, page: currentPage } = getUrlParams(
     location.search
   );
@@ -49,7 +48,6 @@ const MovieSearch = () => {
     }
   );
 
-  // This effect updates the URL when the user stops typing a new search query.
   useEffect(() => {
     if (debouncedSearchQuery !== currentSearch) {
       const search = buildSearchString({

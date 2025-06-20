@@ -6,8 +6,6 @@ import { Spinner } from "neetoui";
 import { FALLBACK_IMAGE } from "../../constants";
 import useViewHistoryStore from "../../stores/useViewHistoryStore";
 
-// 1. Import the constant from your central file.
-
 const DetailItem = ({ label, value }) =>
   value &&
   value !== "N/A" && (
@@ -29,7 +27,6 @@ const MovieModal = ({ isOpen, onClose, details, isLoading }) => {
 
   if (!isOpen) return null;
 
-  // 2. The posterSrc variable is no longer needed.
   const genreTags = details?.Genre?.split(", ") || [];
 
   return (
@@ -77,9 +74,7 @@ const MovieModal = ({ isOpen, onClose, details, isLoading }) => {
                   <img
                     alt={details.Title}
                     className="h-auto w-full rounded-md object-cover"
-                    // 3. Set the src directly from the details object.
                     src={details.Poster}
-                    // 4. The onError handler uses the imported constant.
                     onError={e => {
                       e.target.onerror = null;
                       e.target.src = FALLBACK_IMAGE;

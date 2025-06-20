@@ -2,7 +2,7 @@ import React from "react";
 
 import ReactDOM from "react-dom/client";
 
-import initializeAxios from "./api/axios"; // move this above App
+import initializeAxios from "./api/axios";
 import App from "./App";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
