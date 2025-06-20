@@ -1,24 +1,18 @@
 import React from "react";
 
 import { QueryClient, QueryClientProvider } from "react-query";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import MovieSearch from "./components/Movie/MovieSearch";
-import History from "./components/Pages/History";
+import PageNotFound from "./commons/PageNotFound";
+import MainPageLayout from "./components/Pages/MainPageLayout";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <Router>
-      <div className="flex h-screen bg-gray-50">
-        <main className="flex-1 flex-col overflow-hidden">
-          <MovieSearch />
-        </main>
-        <History />
-      </div>
       <ToastContainer
         closeOnClick
         autoClose={3000}
@@ -27,6 +21,14 @@ const App = () => (
         position="top-right"
         theme="light"
       />
+      <Switch>
+        <Route exact path="/">
+          <MainPageLayout />
+        </Route>
+        <Route path="*">
+          <PageNotFound />
+        </Route>
+      </Switch>
     </Router>
   </QueryClientProvider>
 );
