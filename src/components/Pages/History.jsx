@@ -6,8 +6,6 @@ const History = () => {
   const { movies, selectedMovie, setSelectedMovie } = useViewHistoryStore();
   // Ref to store the DOM nodes of the history buttons
   const historyItemRefs = useRef({});
-
-  // Effect to scroll the selected movie into view
   useEffect(() => {
     if (selectedMovie) {
       const node = historyItemRefs.current[selectedMovie.imdbID];
