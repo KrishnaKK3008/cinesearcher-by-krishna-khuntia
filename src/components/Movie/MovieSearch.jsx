@@ -6,20 +6,24 @@ import { useQuery } from "react-query";
 import { useLocation, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 
+// Import the new utility functions
+
 import MovieCard from "./MovieCard";
 import MovieModal from "./MovieModal";
 
 import movies from "../../api/movies";
 import { DEFAULT_PAGE_SIZE } from "../../constants";
 import useDebounce from "../../hooks/useDebounce";
+import { getUrlParams, buildSearchString } from "../../utils/url";
 
 const MovieSearch = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const queryParams = new URLSearchParams(location.search);
-  const currentSearch = queryParams.get("query") || "";
-  const currentPage = Number(queryParams.get("page")) || 1;
+  // Use the utility function to get parameters from the URL.
+  const { query: currentSearch, page: currentPage } = getUrlParams(
+    location.search
+  );
 
   const [inputValue, setInputValue] = useState(currentSearch);
   const debouncedSearchQuery = useDebounce(inputValue, 500);
@@ -45,18 +49,20 @@ const MovieSearch = () => {
     }
   );
 
+  // This effect updates the URL when the user stops typing a new search query.
   useEffect(() => {
-    if (debouncedSearchQuery) {
-      history.replace(`/?query=${debouncedSearchQuery}&page=1`);
-    } else {
-      history.replace("/");
+    if (debouncedSearchQuery !== currentSearch) {
+      const search = buildSearchString({
+        query: debouncedSearchQuery,
+        page: 1,
+      });
+      history.replace({ search });
     }
-  }, [debouncedSearchQuery, history]);
+  }, [debouncedSearchQuery, currentSearch, history]);
 
   const handlePageChange = newPage => {
-    const newParams = new URLSearchParams(location.search);
-    newParams.set("page", newPage);
-    history.push({ search: newParams.toString() });
+    const search = buildSearchString({ query: currentSearch, page: newPage });
+    history.push({ search });
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
