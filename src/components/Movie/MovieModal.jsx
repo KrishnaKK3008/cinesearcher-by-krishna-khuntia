@@ -1,5 +1,3 @@
-// src/components/Movie/MovieModal.jsx
-
 import React, { useEffect } from "react";
 
 import { Close } from "neetoicons";
