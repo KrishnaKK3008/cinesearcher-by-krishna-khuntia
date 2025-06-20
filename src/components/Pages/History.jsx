@@ -4,7 +4,6 @@ import useViewHistoryStore from "../../stores/useViewHistoryStore";
 
 const History = () => {
   const { movies, selectedMovie, setSelectedMovie } = useViewHistoryStore();
-  // Ref to store the DOM nodes of the history buttons
   const historyItemRefs = useRef({});
   useEffect(() => {
     if (selectedMovie) {
