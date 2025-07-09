@@ -1,3 +1,4 @@
+// src/utils/url.js
 import { keysToSnakeCase } from "neetocist";
 import { stringify } from "qs";
 import { isEmpty, toPairs, pipe, omit } from "ramda";
@@ -6,19 +7,21 @@ export const getUrlParams = search => {
   const queryParams = new URLSearchParams(search);
   const query = queryParams.get("query") || "";
   const page = Number(queryParams.get("page")) || 1;
+  const year = queryParams.get("year") || "";
+  const type = queryParams.get("type") || "";
 
-  return { query, page };
+  return { query, page, year, type };
 };
 
-export const buildSearchString = ({ query, page }) => {
+export const buildSearchString = ({ query, page, year, type }) => {
   const queryParams = new URLSearchParams();
-  if (query) {
-    queryParams.set("query", query);
-  }
+  if (query) queryParams.set("query", query);
 
-  if (page > 1) {
-    queryParams.set("page", String(page));
-  }
+  if (page > 1) queryParams.set("page", String(page));
+
+  if (year) queryParams.set("year", year);
+
+  if (type) queryParams.set("type", type);
 
   return queryParams.toString();
 };

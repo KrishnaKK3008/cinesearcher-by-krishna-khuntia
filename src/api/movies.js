@@ -1,17 +1,21 @@
+// src/api/movies.js
 import axios from "axios";
 
 import { OMDB_API } from "../constants";
 
-const search = async (query, page) => {
+const search = async (query, page, year, type) => {
   try {
-    const response = await axios.get(OMDB_API, {
-      params: {
-        s: query,
-        apikey: process.env.REACT_APP_OMDB_API_KEY,
-        page,
-      },
-    });
-    console.log(`${response} for page number ${page}`);
+    const params = {
+      s: query,
+      apikey: process.env.REACT_APP_OMDB_API_KEY,
+      page,
+    };
+    if (year) params.y = year;
+
+    if (type) params.type = type;
+    const response = await axios.get(OMDB_API, { params });
+    console.log(params);
+    console.log(response);
 
     return response;
   } catch (error) {
@@ -24,10 +28,7 @@ const search = async (query, page) => {
 const getById = async id => {
   try {
     const response = await axios.get(OMDB_API, {
-      params: {
-        i: id,
-        apikey: process.env.REACT_APP_OMDB_API_KEY,
-      },
+      params: { i: id, apikey: process.env.REACT_APP_OMDB_API_KEY },
     });
     console.log(response);
 
@@ -40,5 +41,4 @@ const getById = async id => {
 };
 
 const movies = { search, getById };
-
 export default movies;

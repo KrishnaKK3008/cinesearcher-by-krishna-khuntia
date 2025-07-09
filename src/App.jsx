@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import PageNotFound from "./commons/PageNotFound";
+import FavouritesPage from "./components/Pages/FavouritesPage"; // Import the new Favourites page
 import MainPageLayout from "./components/Pages/MainPageLayout";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,10 @@ const App = () => (
       <Switch>
         <Route exact path="/">
           <MainPageLayout />
+        </Route>
+        {/* Add the new Favourites route */}
+        <Route exact path="/favourites">
+          <FavouritesPage />
         </Route>
         <Route path="*">
           <PageNotFound />
